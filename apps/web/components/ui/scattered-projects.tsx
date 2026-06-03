@@ -153,6 +153,7 @@ export const ScatteredProjects = () => {
         cardRefs.current.forEach((el, i) => {
           if (!el) return;
           const p = projects[i];
+          if (!p) return;
           el.style.left = p.left;
           el.style.top = p.top;
           el.style.transform = `rotate(${p.rotation}deg) scale(1)`;
@@ -226,6 +227,7 @@ export const ScatteredProjects = () => {
     cardRefs.current.forEach((el, i) => {
       if (!el) return;
       const p = projects[i];
+      if (!p) return;
       const isHovered = hoveredId === p.id;
 
       el.style.transition = 'transform 0.45s cubic-bezier(0.22,1,0.36,1), filter 0.4s ease';
@@ -268,7 +270,7 @@ export const ScatteredProjects = () => {
 
       {/* Container for disc + cards */}
       <div ref={containerRef} className='relative w-full pointer-events-auto overflow-visible'
-           style={{ minHeight: DISC_SIZE + HEADER_GAP + 250 }}>
+        style={{ minHeight: DISC_SIZE + HEADER_GAP + 250 }}>
 
         {/* ── Vinyl Disc ── */}
         <div
@@ -300,12 +302,12 @@ export const ScatteredProjects = () => {
 
           {/* Center label */}
           <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full flex items-center justify-center'
-               style={{
-                 width: 140, height: 140,
-                 background: 'radial-gradient(circle, #2a2a2a 0%, #1a1a1a 55%, #111 100%)',
-                 border: '2px solid rgba(255,255,255,0.08)',
-                 boxShadow: 'inset 0 0 25px rgba(0,0,0,0.6)',
-               }}>
+            style={{
+              width: 140, height: 140,
+              background: 'radial-gradient(circle, #2a2a2a 0%, #1a1a1a 55%, #111 100%)',
+              border: '2px solid rgba(255,255,255,0.08)',
+              boxShadow: 'inset 0 0 25px rgba(0,0,0,0.6)',
+            }}>
             <div className='rounded-full' style={{
               width: 24, height: 24, background: '#080808',
               border: '2px solid rgba(255,255,255,0.12)',
