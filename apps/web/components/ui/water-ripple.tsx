@@ -26,7 +26,7 @@ export const WaterRipple: React.FC<WaterRippleProps> = ({ imageUrl, isActive }) 
 
     // ── Simulation parameters ──
     const SIM_SCALE = 0.5;
-    const DAMPING = 0.985;       // Faster decay — waves settle quickly
+    const DAMPING = 0.993;       // Slower decay — waves settle in 5-7 seconds
     const REFRACTION = 128;      // Gentler bending of the image
 
     let screenW = window.innerWidth;
@@ -79,7 +79,7 @@ export const WaterRipple: React.FC<WaterRippleProps> = ({ imageUrl, isActive }) 
       for (let y = -r; y <= r; y++) {
         for (let x = -r; x <= r; x++) {
           const dist = Math.sqrt(x * x + y * y);
-          if (dist > r) continue;
+          if (dist > r) break;
 
           const sx = cx + x;
           const sy = cy + y;
