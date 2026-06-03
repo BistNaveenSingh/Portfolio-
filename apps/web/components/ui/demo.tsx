@@ -12,6 +12,7 @@ import {
   Share2,
   MessageSquare,
 } from 'lucide-react';
+import { ScatteredProjects } from '@/components/ui/scattered-projects';
 
 const currentMedia = {
   src: 'https://images.unsplash.com/photo-1726066012698-bb7a3abce786?q=80&w=1280&auto=format&fit=crop',
@@ -498,6 +499,13 @@ const Demo = () => {
         {/* Content */}
         <div className='relative z-20 w-full pointer-events-none py-10'>
           <Skills />
+        </div>
+      </section>
+
+      {/* Scattered Projects Section */}
+      <section className='relative w-full min-h-screen bg-[#1a1a1e] overflow-hidden flex items-center justify-center'>
+        <div className='relative z-20 w-full pointer-events-none py-10'>
+          <ScatteredProjects />
         </div>
       </section>
 
