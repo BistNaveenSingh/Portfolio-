@@ -277,8 +277,8 @@ export const ScatteredProjects = () => {
           ref={discRef}
           className='absolute rounded-full pointer-events-none'
           style={{
-            left: '50%', top: HEADER_GAP,
-            width: DISC_SIZE, height: DISC_SIZE,
+            left: '50%', top: `${HEADER_GAP}px`,
+            width: `${DISC_SIZE}px`, height: `${DISC_SIZE}px`,
             animation: 'vinylSpin 25s linear infinite',
             opacity: isAttached ? 1 : 0.08,
             transition: 'opacity 0.8s ease',
@@ -303,13 +303,13 @@ export const ScatteredProjects = () => {
           {/* Center label */}
           <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full flex items-center justify-center'
             style={{
-              width: 140, height: 140,
+              width: '140px', height: '140px',
               background: 'radial-gradient(circle, #2a2a2a 0%, #1a1a1a 55%, #111 100%)',
               border: '2px solid rgba(255,255,255,0.08)',
               boxShadow: 'inset 0 0 25px rgba(0,0,0,0.6)',
             }}>
             <div className='rounded-full' style={{
-              width: 24, height: 24, background: '#080808',
+              width: '24px', height: '24px', background: '#080808',
               border: '2px solid rgba(255,255,255,0.12)',
             }} />
           </div>
@@ -327,18 +327,23 @@ export const ScatteredProjects = () => {
             const y = DISC_SIZE / 2 + Math.sin(a) * r - 5;
             return (
               <div key={`d-${i}`} style={{
-                position: 'absolute', left: x, top: y, width: 10, height: 10,
-                borderRadius: '50%', background: DISCO_COLORS[i],
+                position: 'absolute',
+                left: `${x.toFixed(4)}px`,
+                top: `${y.toFixed(4)}px`,
+                width: '10px',
+                height: '10px',
+                borderRadius: '50%',
+                background: DISCO_COLORS[i],
                 boxShadow: `0 0 6px ${DISCO_COLORS[i]}, 0 0 14px ${DISCO_COLORS[i]}, 0 0 28px ${DISCO_COLORS[i]}50`,
                 animation: 'discoPulse 2s ease-in-out infinite',
-                animationDelay: `${i * 0.1}s`,
+                animationDelay: `${(i * 0.1).toFixed(1)}s`,
               }} />
             );
           })}
 
           {/* Outer glow ring */}
           <div className='absolute rounded-full' style={{
-            inset: -6,
+            inset: '-6px',
             border: '2px solid transparent',
             boxShadow: '0 0 20px rgba(255,0,255,0.15), 0 0 40px rgba(0,255,255,0.1), 0 0 60px rgba(255,255,0,0.08)',
             animation: 'discoGlow 4s ease-in-out infinite',
@@ -354,7 +359,7 @@ export const ScatteredProjects = () => {
             className='absolute cursor-pointer'
             onMouseEnter={() => isAttached ? handleOrbitHoverStart(project.id) : setHoveredId(project.id)}
             onMouseLeave={() => isAttached ? handleOrbitHoverEnd() : setHoveredId(null)}
-            style={{ width: CARD_W }}
+            style={{ width: `${CARD_W}px` }}
           >
             <div className='w-full rounded-xl overflow-hidden' style={{
               background: '#131313',
