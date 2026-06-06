@@ -5,8 +5,6 @@ import {
   useRef,
   useState,
   ReactNode,
-  TouchEvent,
-  WheelEvent,
 } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
@@ -34,79 +32,95 @@ const ScrollExpandMedia = ({
   const [scrollProgress, setScrollProgress] = useState<number>(0);
   const [showContent, setShowContent] = useState<boolean>(false);
   const [mediaFullyExpanded, setMediaFullyExpanded] = useState<boolean>(false);
-  const [touchStartY, setTouchStartY] = useState<number>(0);
   const [isMobileState, setIsMobileState] = useState<boolean>(false);
 
   const sectionRef = useRef<HTMLDivElement | null>(null);
+  const progressRef = useRef(0);
+  const expandedRef = useRef(false);
+  const touchStartYRef = useRef(0);
+  const rafPending = useRef(false);
+  const pendingProgress = useRef(0);
+  const pendingExpanded = useRef(false);
 
   useEffect(() => {
+    const flushUpdate = () => {
+      rafPending.current = false;
+      const p = pendingProgress.current;
+      const e = pendingExpanded.current;
+      progressRef.current = p;
+      expandedRef.current = e;
+      setScrollProgress(p);
+      if (e) {
+        setMediaFullyExpanded(true);
+        setShowContent(true);
+      } else if (p < 0.75) {
+        setShowContent(false);
+      }
+    };
+
+    const scheduleUpdate = (progress: number, expanded: boolean) => {
+      pendingProgress.current = progress;
+      pendingExpanded.current = expanded;
+      if (rafPending.current) return;
+      rafPending.current = true;
+      requestAnimationFrame(flushUpdate);
+    };
+
     const handleWheel = (e: WheelEvent) => {
-      if (mediaFullyExpanded && e.deltaY < 0 && window.scrollY <= 5) {
+      if (expandedRef.current && e.deltaY < 0 && window.scrollY <= 5) {
         setMediaFullyExpanded(false);
+        expandedRef.current = false;
+        pendingExpanded.current = false;
         e.preventDefault();
-      } else if (!mediaFullyExpanded) {
+      } else if (!expandedRef.current) {
         e.preventDefault();
         const scrollDelta = e.deltaY * 0.0009;
         const newProgress = Math.min(
-          Math.max(scrollProgress + scrollDelta, 0),
+          Math.max(progressRef.current + scrollDelta, 0),
           1
         );
-        setScrollProgress(newProgress);
-
-        if (newProgress >= 1) {
-          setMediaFullyExpanded(true);
-          setShowContent(true);
-        } else if (newProgress < 0.75) {
-          setShowContent(false);
-        }
+        scheduleUpdate(newProgress, newProgress >= 1);
       }
     };
 
     const handleTouchStart = (e: TouchEvent) => {
       if (e.touches && e.touches[0]) {
-        setTouchStartY(e.touches[0].clientY);
+        touchStartYRef.current = e.touches[0].clientY;
       }
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (!touchStartY) return;
+      if (!touchStartYRef.current) return;
 
       if (e.touches && e.touches[0]) {
         const touchY = e.touches[0].clientY;
-        const deltaY = touchStartY - touchY;
+        const deltaY = touchStartYRef.current - touchY;
 
-        if (mediaFullyExpanded && deltaY < -20 && window.scrollY <= 5) {
+        if (expandedRef.current && deltaY < -20 && window.scrollY <= 5) {
           setMediaFullyExpanded(false);
+          expandedRef.current = false;
+          pendingExpanded.current = false;
           e.preventDefault();
-        } else if (!mediaFullyExpanded) {
+        } else if (!expandedRef.current) {
           e.preventDefault();
-          // Increase sensitivity for mobile, especially when scrolling back
-          const scrollFactor = deltaY < 0 ? 0.008 : 0.005; // Higher sensitivity for scrolling back
+          const scrollFactor = deltaY < 0 ? 0.008 : 0.005;
           const scrollDelta = deltaY * scrollFactor;
           const newProgress = Math.min(
-            Math.max(scrollProgress + scrollDelta, 0),
+            Math.max(progressRef.current + scrollDelta, 0),
             1
           );
-          setScrollProgress(newProgress);
-
-          if (newProgress >= 1) {
-            setMediaFullyExpanded(true);
-            setShowContent(true);
-          } else if (newProgress < 0.75) {
-            setShowContent(false);
-          }
-
-          setTouchStartY(touchY);
+          scheduleUpdate(newProgress, newProgress >= 1);
+          touchStartYRef.current = touchY;
         }
       }
     };
 
     const handleTouchEnd = (): void => {
-      setTouchStartY(0);
+      touchStartYRef.current = 0;
     };
 
-    const handleScroll = (): void => {
-      if (!mediaFullyExpanded) {
+    const handleNativeScroll = (): void => {
+      if (!expandedRef.current) {
         window.scrollTo(0, 0);
       }
     };
@@ -114,7 +128,7 @@ const ScrollExpandMedia = ({
     window.addEventListener('wheel', handleWheel as unknown as EventListener, {
       passive: false,
     });
-    window.addEventListener('scroll', handleScroll as EventListener);
+    window.addEventListener('scroll', handleNativeScroll as EventListener);
     window.addEventListener(
       'touchstart',
       handleTouchStart as unknown as EventListener,
@@ -132,7 +146,7 @@ const ScrollExpandMedia = ({
         'wheel',
         handleWheel as unknown as EventListener
       );
-      window.removeEventListener('scroll', handleScroll as EventListener);
+      window.removeEventListener('scroll', handleNativeScroll as EventListener);
       window.removeEventListener(
         'touchstart',
         handleTouchStart as unknown as EventListener
@@ -143,7 +157,7 @@ const ScrollExpandMedia = ({
       );
       window.removeEventListener('touchend', handleTouchEnd as EventListener);
     };
-  }, [scrollProgress, mediaFullyExpanded, touchStartY]);
+  }, []);
 
   useEffect(() => {
     const checkIfMobile = (): void => {
@@ -160,7 +174,6 @@ const ScrollExpandMedia = ({
   const mediaHeight = 400 + scrollProgress * (isMobileState ? 200 : 400);
   const textTranslateX = scrollProgress * (isMobileState ? 180 : 150);
 
-  const isRippleActive = scrollProgress < 0.15;
   const firstWord = title ? title.split(' ')[0] : '';
   const restOfTitle = title ? title.split(' ').slice(1).join(' ') : '';
 
@@ -192,8 +205,7 @@ const ScrollExpandMedia = ({
             <div className='absolute inset-0 bg-black/10 pointer-events-none' />
           </motion.div>
 
-          {/* Water ripple canvas — z-[5] sits between background (z-0) and text (z-10) */}
-          <WaterRipple imageUrl={bgImageSrc} isActive={isRippleActive} />
+          <WaterRipple imageUrl={bgImageSrc} isActive={true} />
 
           <div className='container mx-auto flex flex-col items-center justify-start relative z-10 pointer-events-none'>
             <div className='flex flex-col items-center justify-center w-full h-[100dvh] relative'>
