@@ -132,6 +132,7 @@ const SocialLinks = () => {
 };
 
 import { CubeCard } from "./cube-card";
+import MusicPlayer from "./music-player";
 
 type RotateDir = "up" | "down" | "left" | "right";
 
@@ -512,6 +513,8 @@ const Demo = () => {
       <section className='relative w-full min-h-screen bg-black overflow-hidden'>
         <SocialLinks />
       </section>
+
+      <MusicPlayer />
     </div>
   );
 };
