@@ -265,7 +265,7 @@ function CubeFront({ imageSrc, imageAlt, title }: { imageSrc: string; imageAlt: 
 
 function CubeBack({ title, description, buttonText }: { title: string; description: string; buttonText: string }) {
   return (
-    <div className="flex flex-col items-center justify-center h-full w-full px-4 py-3 bg-[#0a0a0a]">
+    <div className="flex flex-col items-center justify-center h-full w-full px-4 py-3 bg-black">
       <h3 className="text-[10px] font-bold text-white mb-1.5 tracking-widest uppercase text-center">{title}</h3>
       <div className="h-[1px] w-8 bg-white/20 mb-1.5"></div>
       <p className="text-[10px] text-neutral-400 text-center leading-relaxed line-clamp-4">

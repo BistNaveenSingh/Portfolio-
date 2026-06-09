@@ -59,7 +59,7 @@ export function CubeCard({
         {faces.map((face) => (
           <div
             key={face.id}
-            className="absolute inset-0 w-full h-full rounded-none overflow-hidden border border-black bg-[#0a0a0a] shadow-[0_0_10px_rgba(255,255,255,0.15)]"
+            className="absolute inset-0 w-full h-full rounded-none overflow-hidden border border-neutral-800 bg-black shadow-[0_8px_32px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.05)_inset]"
             style={{
               transform: face.transform,
               backfaceVisibility: "hidden",
