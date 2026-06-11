@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { motion } from 'framer-motion';
 import ScrollExpandMedia from '@/components/ui/scroll-expansion-hero';
 import { Boxes } from '@/components/ui/background-boxes';
 import {
@@ -383,8 +384,14 @@ const Certifications = () => {
 
       <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-4 md:px-0'>
         {certifications.map((cert, index) => (
-          <div
+          <motion.div
             key={index}
+            initial={{ opacity: 0, y: 60, scale: 0.85, rotateX: -15 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
+            whileHover={{ y: -8, scale: 1.03, transition: { duration: 0.3 } }}
+            viewport={{ once: true, margin: '-50px' }}
+            transition={{ type: 'spring', stiffness: 120, damping: 14, delay: index * 0.08 }}
+            style={{ perspective: '800px' }}
             className='flex flex-col items-center text-center p-8 rounded-2xl bg-[#0a0a0a] border border-white/[0.04] hover:bg-[#151515] transition-colors duration-300 pointer-events-auto h-64 justify-center'
           >
             {/* Icon */}
@@ -416,7 +423,7 @@ const Certifications = () => {
                 <span className='ml-1 opacity-80'>→</span>
               </a>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>
