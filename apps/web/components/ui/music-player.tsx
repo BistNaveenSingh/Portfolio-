@@ -16,7 +16,7 @@ function getTrack(index: number) {
 
 export default function MusicPlayer() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
   const [currentTrack, setCurrentTrack] = useState(0);
   const [volume, setVolume] = useState(0.5);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -38,6 +38,11 @@ export default function MusicPlayer() {
     audio.onended = () => handleNextRef.current();
     audioRef.current = audio;
 
+    const playPromise = audio.play();
+    if (playPromise) {
+      playPromise.catch(() => setIsPlaying(false));
+    }
+
     return () => {
       audio.pause();
       audioRef.current = null;
@@ -50,8 +55,12 @@ export default function MusicPlayer() {
       audioRef.current.pause();
       setIsPlaying(false);
     } else {
-      audioRef.current.play();
-      setIsPlaying(true);
+      const promise = audioRef.current.play();
+      if (promise) {
+        promise.then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+      } else {
+        setIsPlaying(true);
+      }
     }
   }, [isPlaying]);
 
