@@ -147,16 +147,6 @@ export const WaterRipple: React.FC<WaterRippleProps> = ({ imageUrl, isActive }) 
       lastDropY = y;
     };
 
-    const handleMouseMove = (e: MouseEvent) => {
-      if (isInTextRegion(e.clientX, e.clientY)) return;
-      emitTrail(e.clientX, e.clientY);
-    };
-
-    const handleMouseLeave = () => {
-      lastDropX = -1;
-      lastDropY = -1;
-    };
-
     const handleClick = (e: MouseEvent) => {
       if (isInTextRegion(e.clientX, e.clientY)) return;
       dropAt(e.clientX, e.clientY, 16, 350);
@@ -187,8 +177,6 @@ export const WaterRipple: React.FC<WaterRippleProps> = ({ imageUrl, isActive }) 
     canvas.style.pointerEvents = 'auto';
     const leafCursor = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg transform='rotate(-45 16 16)'%3E%3Cpath d='M16 2 Q6 8 5 16 Q4 24 10 30 L16 32 L22 30 Q28 24 27 16 Q26 8 16 2Z' fill='%234CAF50' stroke='%232E7D32' stroke-width='1'/%3E%3Cpath d='M16 5 L16 24' stroke='%232E7D32' stroke-width='1' fill='none'/%3E%3Cpath d='M16 14 Q11 11 9 16' stroke='%232E7D32' stroke-width='1' fill='none'/%3E%3Cpath d='M16 14 Q21 11 23 16' stroke='%232E7D32' stroke-width='1' fill='none'/%3E%3C/g%3E%3C/svg%3E\") 6 6, auto";
     canvas.style.cursor = leafCursor;
-    canvas.addEventListener('mousemove', handleMouseMove);
-    canvas.addEventListener('mouseleave', handleMouseLeave);
     canvas.addEventListener('click', handleClick);
     canvas.addEventListener('touchmove', handleTouchMove, { passive: true });
     canvas.addEventListener('touchstart', handleTouchStart, { passive: true });
@@ -326,8 +314,6 @@ export const WaterRipple: React.FC<WaterRippleProps> = ({ imageUrl, isActive }) 
 
     return () => {
       cancelAnimationFrame(animationFrameId);
-      canvas.removeEventListener('mousemove', handleMouseMove);
-      canvas.removeEventListener('mouseleave', handleMouseLeave);
       canvas.removeEventListener('click', handleClick);
       canvas.removeEventListener('touchmove', handleTouchMove);
       canvas.removeEventListener('touchstart', handleTouchStart);
