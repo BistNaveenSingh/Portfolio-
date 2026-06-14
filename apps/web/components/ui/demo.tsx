@@ -62,7 +62,7 @@ const SocialLinks = () => {
     {
       name: 'LinkedIn',
       icon: LinkIcon,
-      url: 'https://linkedin.com/in/naveen-singh',
+      url: 'https://www.linkedin.com/in/bist-naveen-singh-538004342/',
       color: 'hover:text-blue-400',
     },
     {
